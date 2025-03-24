@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIN Entry</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: url('bg.jpg'); /* Background image */
+            background-size: cover;
+            background-position: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            width: 300px;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        h2 {
+            color: #333;
+        }
+        input {
+            padding: 10px;
+            font-size: 18px;
+            text-align: center;
+            width: 120px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px;
+            font-size: 18px;
+            margin-top: 10px;
+            cursor: pointer;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease-in-out;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #showPin {
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        p {
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .error-message {
+            color: red;
+        }
+        .success-message {
+            color: green;
+        }
+        .locked-message {
+            color: orange;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <audio id="keySound" src="pin.mp3"></audio>
+    <audio id="successSound" src="https://www.fesliyanstudios.com/play-mp3/438"></audio>
+    <audio id="errorSound" src="https://www.fesliyanstudios.com/play-mp3/359"></audio>
+    
+    <div class="container">
+        <h2>Enter PIN</h2>
+        <input type="password" id="pin" maxlength="4" placeholder="****">
+        <br>
+        <button onclick="checkPIN()">Submit</button>
+        <br>
+        <input type="checkbox" id="showPin" onclick="togglePinVisibility()"> Show PIN
+        <p id="message" class="error-message"></p>
+    </div>
+
+    <script>
+        let attempts = 0;
+        const maxAttempts = 3;
+        const correctPIN = "1234";
+        const pinInput = document.getElementById("pin");
+        
+        pinInput.addEventListener("input", () => {
+            document.getElementById("keySound").play();
+        });
+
+        function checkPIN() {
+            const userPIN = pinInput.value;
+            const message = document.getElementById("message");
+
+            if (attempts >= maxAttempts) {
+                message.className = "locked-message";
+                message.textContent = "Too many incorrect attempts. Please try again later.";
+                return;
+            }
+
+            if (userPIN === correctPIN) {
+                document.getElementById("successSound").play();
+                setTimeout(() => {
+                    window.location.href = "Logo.mp4";  <!-- Navigate to video.html after successful PIN entry -->
+                }, 1000);
+            } else {
+                document.getElementById("errorSound").play();
+                attempts++;
+                message.textContent = `Incorrect PIN. ${maxAttempts - attempts} attempts left.`;
+                if (attempts >= maxAttempts) {
+                    message.className = "locked-message";
+                    message.textContent = "Too many incorrect attempts. Please try again later.";
+                }
+            }
+        }
+
+        function togglePinVisibility() {
+            pinInput.type = document.getElementById("showPin").checked ? "text" : "password";
+        }
+    </script>
+</body>
+</html>
