@@ -1,1 +1,1 @@
-Made with html , css and js
+Made with HTML , CSS AND JAVASCRIPT. 
